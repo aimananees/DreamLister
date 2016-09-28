@@ -91,3 +91,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 }
 
+//Below is used to access any above methods directly
+let ad = UIApplication.shared.delegate as! AppDelegate
+//Suppose we want saveContext()....then we type "ad.saveContext()"
+
+let context = ad.persistentContainer.viewContext
+
+
+
