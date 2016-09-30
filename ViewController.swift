@@ -50,6 +50,11 @@ class ViewController: UIViewController , UITableViewDelegate,UITableViewDataSour
         
     }
     
+    //This is used for viewing already added cell...
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        <#code#>
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         if let sections = fetchedResultsController.sections{
@@ -83,6 +88,8 @@ class ViewController: UIViewController , UITableViewDelegate,UITableViewDataSour
         //Activates the above code..
         let controller = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: context , sectionNameKeyPath: nil, cacheName: nil)
         //"context---refer AppDelegate.swift
+        
+        controller.delegate = self
         
         self.fetchedResultsController = controller
         
