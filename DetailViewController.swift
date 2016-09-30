@@ -20,7 +20,7 @@ class DetailViewController: UIViewController,UIPickerViewDataSource,UIPickerView
     @IBOutlet weak var detailsField: UITextField!
     
     var stores = [Store]()
-    
+    var itemToEdit : Item?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -53,6 +53,12 @@ class DetailViewController: UIViewController,UIPickerViewDataSource,UIPickerView
         ad.saveContext()
     */
         getStores()
+        
+        //This is used to check if we have selected a cell and wish to edit...if yes then it gives complete view of that cell
+        if itemToEdit != nil{
+            loadItemData()
+            
+        }
         
     }
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
@@ -88,6 +94,59 @@ class DetailViewController: UIViewController,UIPickerViewDataSource,UIPickerView
     
     
     @IBAction func saveButton(_ sender: UIButton) {
+        //This button stores new title,price,and deltails into database once save button is clicked
+        let item = Item(context: context)
+        
+        if let title = textField.text{
+            item.title = title
+        }
+        
+        if let price = price.text{
+            item.price = (price as NSString).doubleValue //since price property in "item" is double and price.text is a string,hence price.text is converted to NSString and double value can be extracted
+            
+        }
+        
+        if let details = detailsField.text{
+            item.details = details
+        }
+        
+        //Now we have to assign the above properties created to toStore relationship of item that we had created....as we have created a pickerView containing all the store there should a way to link these..hence it is done in this way
+        
+        item.toStore = stores[pickerView.selectedRow(inComponent: 0)]
+        
+        ad.saveContext()
+        //Once saved..goes back to the homescreen
+        
+        _ = navigationController?.popViewController(animated: true)
+        
+        
+        
         
     }
+    
+    func loadItemData(){
+        if let item = itemToEdit{
+            textField.text = item.title
+            price.text = "\(item.price)"
+            detailsField.text = item.details
+            
+        }
+        
+        
+        let item = Item(context: context)
+        if let store = item.toStore{
+            var index = 0
+            repeat{
+                let s = stores[index]
+                if s.name == store.name{
+                    pickerView.selectRow(index, inComponent: 0, animated: false)
+                break
+                }
+                index=index+1
+            }while (index < stores.count)
+            
+        }
+            
+    }
 }
+
